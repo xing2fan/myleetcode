@@ -1,0 +1,81 @@
+题目描述
+给你一个二叉搜索树和其中的某一个结点，请你找出该结点在树中顺序后继的节点。
+结点 p 的后继是值比 p.val 大的结点中键值最小的结点。
+
+
+
+注意:
+假如给出的结点在该树中没有顺序后继的话，请返回 null
+我们保证树中每个结点的值是唯一的
+
+思路：
+一般看到二叉搜索树，我们首先想到的就是中序遍历，这样就可以得到他的排序后的值。故而这道题也是一样，中序遍历找到下一个节点pNext。
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+
+    TreeNode *pPrev = NULL;
+    TreeNode *pNext = NULL;
+	
+public:
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        if(root == NULL || p == NULL)
+		{
+			return NULL;
+		}
+		
+        inorder(root,p);
+		
+        return pNext;
+    }
+    
+	
+    void inorder(TreeNode* root, TreeNode *p)
+	{
+        if(root == NULL)
+		{
+			return;
+		}
+		
+        inorder(root->left,p);
+		
+        if(pPrev != NULL && pPrev == p)
+        {
+			pNext = root;
+		}
+        pPrev = root;
+		
+        inorder(root->right, p);
+    }
+};
+
+
+方法2：
+class Solution {
+public:
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        TreeNode *res = NULL;
+        while (root) 
+		{
+            if (root->val > p->val) 
+			{
+                res = root;
+                root = root->left;
+            } 
+			else 
+			{
+				root = root->right;
+			}
+        }
+        return res;
+    }
+};
+

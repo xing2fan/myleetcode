@@ -1,0 +1,46 @@
+给定一个二叉树，其中所有的右节点要么是具有兄弟节点（拥有相同父节点的左节点）的叶节点，要么为空，将此二叉树上下翻转并将它变成一棵树， 
+原来的右节点将转换成左叶节点。返回新的根。
+
+
+解题思路：
+翻转的形式一开始不是很清楚，但是discuss里面的高票答案给了一个很好的解释。看例子，树的左边最深的底层是4，4是新的root。对于每个root node，
+将链接右孩子的指针去掉，将root node变为当前左孩子的left node，root node成为左孩子的right node。
+
+递归算法步骤：
+1、设置递归终止条件，节点为空就终止；
+2、对二叉树的左子树进行翻转
+3、对二叉树的右子树进行翻转
+4、将根节点左右子树的节点进行交换
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     struct TreeNode *left;
+ *     struct TreeNode *right;
+ * };
+ */
+ 
+struct TreeNode* DFS(struct TreeNode* root)
+{
+    if(!root||(!root->left&&!root->right))
+	{
+		return root;
+	}
+	
+    //root->left为此层根节点，为左子树的叶节点
+	
+    TreeNode* tmp = root->left;
+    TreeNode* ret = DFS(tmp);
+	
+    tmp->left  = root->right;
+    tmp->right = root;
+    root->right=NULL;
+    root->left=NULL;
+    return ret;
+}
+ 
+struct TreeNode* upsideDownBinaryTree(struct TreeNode* root){
+    return DFS(root);
+}
