@@ -1,0 +1,48 @@
+/*
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};*/
+class Solution {
+public:
+    ListNode* FindFirstCommonNode( ListNode* pHead1, ListNode* pHead2) {
+        int len1 = GetListLength(pHead1);
+        int len2 = GetListLength(pHead2);
+        int difflen = len1 - len2;
+        
+        ListNode *pLong = pHead1;
+        ListNode *pShort = pHead2;
+        
+        if(difflen < 0 )
+        {
+            difflen = len2 - len1;
+            pLong = pHead2;
+            pShort = pHead1;
+        }
+        
+        for(int i = 0; i< difflen; i++)
+        {
+            pLong = pLong->next;
+        }
+        while(pLong != NULL && pShort != NULL && pLong->val != pShort->val)
+        {
+            pLong = pLong->next;
+            pShort = pShort->next;
+        }
+        return pLong;
+        
+    }
+    int GetListLength(ListNode* pHead)
+        {
+            int len = 0;
+            while(pHead != NULL)
+            {
+                len++;
+                pHead = pHead->next;
+            }
+            return len;
+        }
+};
