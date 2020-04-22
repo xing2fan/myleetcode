@@ -1,0 +1,70 @@
+LeetCode（86）：分隔链表
+
+题目描述：
+
+给定一个链表和一个特定值 x，对链表进行分隔，使得所有小于x的节点都在大于或等于x的节点之前。
+你应当保留两个分区中每个节点的初始相对位置。
+
+
+示例:
+输入: head = 1->4->3->2->5->2, x = 3
+输出: 1->2->2->4->3->5
+
+
+思路：
+
+这道题要求我们划分链表，把所有小于给定值的节点都移到前面，大于该值的节点顺序不变，相当于一
+个局部排序的问题。那么可以想到的一种解法是首先找到第一个大于或等于给定值的节点，用题目中给
+的例子来说就是先找到4，然后再找小于3的值，每找到一个就将其取出置于4之前即可.
+
+这种解法的链表变化顺序为：
+1 -> 4 -> 3 -> 2 -> 5 -> 2 
+
+//保存2,然后让3指向5,2指向4，此时是2--->4--->3--->5，最后1指向2
+1 -> 2 -> 4 -> 3 -> 5 -> 2 
+
+1 -> 2 -> 2 -> 4 -> 3 -> 5
+
+
+class Solution {
+public:
+    ListNode *partition(ListNode *head, int x) {
+	
+        ListNode *dummy = new ListNode(-1);
+        dummy->next = head;
+		
+        ListNode *pre = dummy, *cur = head;;
+		
+		
+        while (pre->next && pre->next->val < x) 
+		{
+			pre = pre->next;
+		}
+		cur = pre;//找到第一个大于或等于给定值的节点此时pre=1
+		
+		
+        while (cur->next) 
+		{
+		
+			//再去找小于给定值的节点
+            if (cur->next->val < x) //当cur=3时，cur->next=2
+			{
+				//tmp是2
+                ListNode *tmp = cur->next; //tmp现在是2，即小于x的那个数
+				
+                cur->next = tmp->next; //3--->5 凡是如Q--->next = X的语句表示将Q指向X，这里是cur跳过tmp了
+				
+                tmp->next = pre->next; //2--->4
+				
+                pre->next = tmp;//1-->2
+				
+                pre = pre->next;//pre = 2 凡是如Q = X的语句表示Q现在是X
+            } 
+			else 
+			{
+                cur = cur->next;
+            }
+        }
+        return dummy->next;
+    }
+};

@@ -1,0 +1,59 @@
+
+
+思路：
+
+两个链表中数字分别相加，因为两个数字相加的最大值为19（包含进位），就是说两个数字相加后十位上的数字要么是1或者是0，
+可以定义变量temp保存十位数字，循环遍历一遍分别取得个位上的数字，最后判断temp是否为1，在最后的数字中补上一个1，即为最终结果。
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* head = new ListNode(-1);
+        ListNode* cur = head;//哑结点
+        
+        int sum = 0;
+        bool carry = false;//进位
+
+        while(l1 != NULL || l2 != NULL)
+        {
+            sum = 0; //每次计算相应位的时候，sum需要清零
+            if(l1 != NULL)
+            {
+                sum += l1->val;
+                l1 = l1 -> next;
+            }
+            if(l2 != NULL)
+            {
+                sum += l2->val;
+                l2 = l2 -> next;
+            }
+			
+            if(carry)
+            {
+                sum++;
+            }
+            cur->next = new ListNode(sum % 10);
+
+            cur = cur -> next;//指针移动
+			
+            carry = sum >= 10 ? true: false;//之所以放在最后计算carry，因为是对下一次计算产生作用
+
+        }
+		
+        if(carry)
+        {
+            cur -> next = new ListNode(1);
+        }
+		
+        return head -> next;
+    }
+};

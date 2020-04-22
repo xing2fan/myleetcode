@@ -1,0 +1,73 @@
+
+用一个 非空 单链表来表示一个非负整数，然后将这个整数加一。
+
+你可以假设这个整数除了 0 本身，没有任何前导的 0。
+
+这个整数的各个数位按照 高位在链表头部、低位在链表尾部 的顺序排列。
+
+示例:
+
+输入: [1,2,3]
+输出: [1,2,4]
+
+
+思路：
+这是一道linked list题，有几种情况需要考虑，
+第一种情况正常，末尾不为9的时候直接+1
+第二种情况，末尾为9的时候要向前进位置，还要判断如果全为9的话要新建一个链表头
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode plusOne(ListNode head) {
+	
+        ListNode newHead = new ListNode(0);
+        newHead.next  = head;
+        ListNode curr = newHead;
+        ListNode curr_head = newHead;
+		
+		// newHead        head
+		// 0-------------->1---------------------->2------------------->3
+		// curr
+		// curr_head
+		
+        while(curr.next != NULL)
+		{
+            curr = curr.next;
+            if(curr.val != 9)
+			{
+                curr_head = curr;
+            }
+        }
+        if(curr_head == curr)
+		{
+            curr.val++;
+        }
+		else
+		{
+            curr_head.val++;
+            curr = curr_head;
+            while(curr.next != null)
+			{
+                curr = curr.next;
+                curr.val = 0;
+            }
+        }
+        if(newHead.val == 0)
+		{
+            newHead.next = null;
+            return head;
+        }
+		else
+		{
+            return newHead;
+        }
+        
+    }
+}
