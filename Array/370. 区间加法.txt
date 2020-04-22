@@ -1,0 +1,43 @@
+
+
+
+假设你有一个长度为 n 的数组，初始情况下所有的数字均为 0，你将会被给出 k​​​​​​​ 个更新的操作。
+其中，每个操作会被表示为一个三元组：[startIndex, endIndex, inc]，你需要将子数组 A[startIndex ... endIndex]（包括 startIndex 和 endIndex）增加 inc。
+请你返回 k 次操作后的数组。
+
+
+思路：
+
+如果每一次操作都要处理整个区间上的数的话，太麻烦了，容易超时。所以不妨先仅用区间的起点和终点来记录对整个区间上的操作。
+对于操作[start, end, inc]， 把nums[start] += inc, nums[end +1] -= inc。
+
+比如对于[0, 0, 0, 0, 0]进行操作[1,3,2]，用新的数组进行记录：[0, 2, 0, 0,-2, 0 ]
+想要得到处理的结果，则从前往后得到前缀和数组，即[0, 2, 2, 2, 0, 0]，弃最后一位不要，因为它只是用来保存操作。
+
+
+
+对于[le,ri]递增inc的操作，只需要记录le开始都要递增inc。但ri之后的本来不需要递增的，所以再记录ri+1（含）之后递减inc。
+即对于这一条操作，只改动
+data[le]+=inc;　　data[ri+1]-=inc;
+最后数组累加起来就是结果
+
+
+class Solution {
+public:
+    vector<int> getModifiedArray(int length, vector<vector<int>>& updates) {
+        vector<int> data(length + 1,0);
+		
+        for(auto& tup:updates)
+		{
+            data[tup[0]] += tup[2];
+            data[tup[1]+1] -= tup[2];
+        }
+		
+        for(int i=1;i<length;++i)
+		{
+            data[i] += data[i-1];
+        }
+        data.pop_back();
+        return move(data);
+    }
+};
