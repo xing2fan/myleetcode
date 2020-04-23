@@ -1,0 +1,37 @@
+给定两个没有重复元素的数组 nums1 和 nums2 ，其中nums1 是 nums2 的子集。找到 nums1 中每个元素在 nums2 中的下一个比其大的值。
+nums1 中数字 x 的下一个更大元素是指 x 在 nums2 中对应位置的右边的第一个比 x 大的元素。如果不存在，对应位置输出-1。
+
+
+
+单调栈
+对于nums2的元素，维护一个单调不增的栈。依次扫描nums2的元素，假如扫到第i位，而且当前栈顶元素小于第i位元素，
+则栈顶元素找到了下一个比它大的元素。将其记录到哈希表中。否则将第i位元素入栈。当扫描完nums2，留在栈中的元素
+都是没有比它大的元素存在的。最后，对于nums1的每个元素，依次查询哈希表即可得到他们的下一个更大元素
+
+
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        vector<int> res;
+        unordered_map<int, int> mp;
+        stack<int> sk;
+        
+        for(int n: nums2)
+        {
+            while(!sk.empty() && sk.top() < n)
+            {
+                mp[sk.top()] = n;
+                sk.pop();
+            }
+            sk.push(n);
+        }
+        while(!sk.empty()){
+            mp[sk.top()] = -1;
+            sk.pop();
+        }
+        for(int n: nums1){
+            res.push_back(mp[n]);
+        }
+        return res;        
+    }
+};

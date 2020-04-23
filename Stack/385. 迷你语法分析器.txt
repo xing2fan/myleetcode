@@ -1,0 +1,85 @@
+385. 迷你语法分析器
+
+
+给定一个用字符串表示的整数的嵌套列表，实现一个解析它的语法分析器。
+列表中的每个元素只可能是整数或整数嵌套列表
+提示：你可以假定这些字符串都是格式良好的：
+字符串非空
+字符串不包含空格
+字符串只包含数字0-9, [, - ,, ]
+ 
+
+示例 1：
+给定 s = "324",
+你应该返回一个 NestedInteger 对象，其中只包含整数值 324。
+
+
+思路：
+我们维护一个栈stack用于存储嵌套列表，接下来我们对可能出现的情况分别进行处理：
+
+Step1： 第一个字符不是'['，说明遇到了数字，那么我们就直接返回
+注意要包装成NestedInteger对象：
+    if s[0] != '[':
+        return NestedInteger(int(s))
+Step2： 第一个字符是'['，每一个字符可能的情况共有5种，我们分别讨论
+- 数字：计算10进制数字大小即可
+- 负号：设置符号位为-1
+- 左括号：栈append一个空的NestedInteger对象
+- 逗号：前面是数字，把栈顶的元素pop出来，然后append(前面的数字)，重新压入栈中
+    其实，题目说明了这些字符串都是格式良好的，遇到逗号说明前面肯定有'['，此时栈一定是有元素的
+- 右括号：处理同逗号；但还需对嵌套列表进行处理：
+    把栈顶元素pop出来(即嵌套底层的list)，
+    把新的栈顶(即嵌套的高层list)append刚才pop出来的底层的list，重新压入栈中
+
+
+
+NestedInteger deserialize(string s) {
+    stack<NestedInteger*> stk;
+    string numStr;
+    for (char &c : s) 
+	{
+        if (c == '[') 
+		{
+            NestedInteger *res = new NestedInteger();
+            stk.push(res);
+        } 
+		else if (c == '-' || isdigit(c)) 
+		{
+            if (stk.empty()) 
+			{
+				return NestedInteger(stoi(s));
+			}
+            else 
+			{
+				numStr.push_back(c);
+			}
+        } 
+		else if (c == ',') 
+		{
+            if (!numStr.empty()) 
+			{
+                stk.top()->add(NestedInteger(stoi(numStr)));
+                numStr = "";
+            }
+        } 
+		else 
+		{
+            if (!numStr.empty()) 
+			{
+                stk.top()->add(NestedInteger(stoi(numStr)));
+                numStr = "";
+            }
+            NestedInteger *res = stk.top();
+            stk.pop();
+            if (stk.empty()) 
+			{
+                return *res;
+            } 
+			else 
+			{
+                stk.top()->add(*res);
+            }
+        }
+    }
+    return NestedInteger();
+}
